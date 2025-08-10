@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Election Results</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    .results-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+    .result-card {
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 5px;
+      border-left: 4px solid #3498db;
+      background-color: #f9f9f9;
+    }
+    .candidate-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .candidate-details {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      color: #555;
+    }
+    .votes {
+      font-weight: bold;
+      color: #e74c3c;
+    }
+    .location {
+      font-style: italic;
+      color: #7f8c8d;
+    }
+    .error {
+      color: #e74c3c;
+      text-align: center;
+      padding: 20px;
+    }
+    .loading {
+      text-align: center;
+      color: #7f8c8d;
+      padding: 20px;
+    }
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #eaf7ff;
+      border-radius: 5px;
+    }
+    .refresh-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    .refresh-btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Election Results</h1>
+  
+  <div class="results-container" id="resultsContainer">
+    <div class="loading" id="loadingMessage">Loading results...</div>
+  </div>
+
+  <button class="refresh-btn" onclick="fetchResults()">Refresh Results</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', fetchResults);
+
+    function fetchResults() {
+      const resultsContainer = document.getElementById('resultsContainer');
+      resultsContainer.innerHTML = '<div class="loading">Loading results...</div>';
+
+      fetch('http://localhost:3300/get_res')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            displayResults(data.data);
+          } else {
+            throw new Error(data.error || 'Failed to fetch results');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          resultsContainer.innerHTML = `<div class="error">Error fetching results: ${error.message}</div>`;
+        });
+    }
+
+    function displayResults(results) {
+      const resultsContainer = document.getElementById('resultsContainer');
+      resultsContainer.innerHTML = '';
+
+      if (!results || results.length === 0) {
+        resultsContainer.innerHTML = '<div class="error">No results available</div>';
+        return;
+      }
+
+      // Group results by candidate
+      const candidateMap = {};
+      results.forEach(result => {
+        if (!candidateMap[result.candidateName]) {
+          candidateMap[result.candidateName] = {
+            name: result.candidateName,
+            location: result.location,
+            totalVotes: 0,
+            entries: []
+          };
+        }
+        candidateMap[result.candidateName].entries.push(result);
+        candidateMap[result.candidateName].totalVotes += result.votes;
+      });
+
+      // Create summary
+      const summaryDiv = document.createElement('div');
+      summaryDiv.className = 'summary';
+      summaryDiv.innerHTML = `<h2>Summary</h2>`;
+
+      // Sort candidates by votes (descending)
+      const sortedCandidates = Object.values(candidateMap).sort((a, b) => b.totalVotes - a.totalVotes);
+      
+      // Add candidates to summary
+      sortedCandidates.forEach(candidate => {
+        const candidateDiv = document.createElement('div');
+        candidateDiv.className = 'result-card';
+        
+        candidateDiv.innerHTML = `
+          <div class="candidate-name">${candidate.name}</div>
+          <div class="candidate-details">
+            <span class="location">Location: ${candidate.location}</span>
+            <span class="votes">Total Votes: ${candidate.totalVotes}</span>
+          </div>
+        `;
+        
+        resultsContainer.appendChild(candidateDiv);
+      });
+
+      // Add timestamp
+      const timestamp = document.createElement('div');
+      timestamp.style.textAlign = 'center';
+      timestamp.style.marginTop = '20px';
+      timestamp.style.color = '#7f8c8d';
+      timestamp.textContent = `Last updated: ${new Date().toLocaleString()}`;
+      resultsContainer.appendChild(timestamp);
+    }
+  </script>
+</body>
+</html>

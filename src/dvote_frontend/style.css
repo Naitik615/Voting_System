@@ -1,0 +1,188 @@
+.body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom, #FF9933, white, #138808);
+    /* Indian flag colors */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.92);
+    padding: 30px 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    max-width: 400px;
+    width: 100%;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.quote {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+form label {
+    font-weight: bold;
+    color: #222;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input[type="text"] {
+    padding: 12px;
+    width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #138808;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #138808;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+}
+
+button:hover {
+    background-color: #0f6606;
+}
+
+button a {
+    text-decoration: none;
+    color: white;
+}
+
+footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #444;
+}
+
+/* Language Selector Styles */
+.language-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Language Button new updatedStyles */
+.lang-btn {
+    width: 41px;
+    height: 41px;
+    border: none;
+    background: linear-gradient(5000deg, #1495ff, #1495ff);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.lang-icon {
+    width: 30px;
+    height: 30px;
+    transition: all 0.3s ease;
+}
+
+.lang-btn:hover .lang-icon {
+    transform: scale(1.1);
+}
+
+
+.lang-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.lang-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #333;
+}
+
+.lang-option:hover {
+    background-color: #f0f0f0;
+}
+
+.flag-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.lang-option span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* Voice Button Styles */
+.voice-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #2196F3;
+    color: white;
+}
+
+.voice-btn:hover {
+    background-color: #0b7dda;
+}

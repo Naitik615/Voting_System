@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        #camera-container {
+            position: relative;
+            width: 500px;
+            height: 480px;
+            margin: 20px auto;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        #camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #scan-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('scan.gif') center/cover no-repeat;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        #gesture-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        #gesture-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-bottom: 20px;
+        }
+        #timer {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        .scanning #scan-overlay {
+            opacity: 1;
+        }
+        .gesture-verification #gesture-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h2>Face Verification System</h2>
+    
+    <div id="camera-container">
+        <img id="camera-feed" src="http://localhost:5000/video_feed" alt="Camera Feed">
+        <div id="scan-overlay"></div>
+        <div id="gesture-overlay">
+            <h3>Please show this gesture:</h3>
+            <img id="gesture-image" src="" alt="Gesture to show">
+            <div id="timer">6</div>
+        </div>
+    </div>
+    
+    <button onclick="verifyFace()">Start Face Verification</button>
+    
+    <div id="result"></div>
+
+    <script>
+        let timerInterval;
+        let currentGestureName = '';
+        
+        function startGestureTimer() {
+            const timerElement = document.getElementById('timer');
+            const cameraContainer = document.getElementById('camera-container');
+            let timeLeft = 6;
+            
+            cameraContainer.classList.add('gesture-verification');
+            timerElement.textContent = timeLeft;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    cameraContainer.classList.remove('gesture-verification');
+                }
+            }, 1000);
+        }
+        
+        function stopGestureTimer() {
+            clearInterval(timerInterval);
+            const cameraContainer = document.getElementById('camera-container');
+            cameraContainer.classList.remove('gesture-verification');
+        }
+
+        async function getGesture() {
+            try {
+                const response = await fetch('http://localhost:5000/get_gesture', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Update gesture image
+                const gestureImage = document.getElementById('gesture-image');
+                gestureImage.src = `data:image/jpeg;base64,${data.gesture_image}`;
+                
+                // Store gesture name
+                currentGestureName = data.gesture_name;
+                
+                return true;
+            } catch (error) {
+                console.error('Error getting gesture:', error);
+                return false;
+            }
+        }
+
+        async function verifyFace() {
+            const resultDiv = document.getElementById('result');
+            const cameraContainer = document.getElementById('camera-container');
+            resultDiv.textContent = 'Verifying...';
+            resultDiv.className = '';
+            
+            // Add scanning animation
+            cameraContainer.classList.add('scanning');
+
+            try {
+                // First get the gesture
+                const gestureSuccess = await getGesture();
+                if (!gestureSuccess) {
+                    throw new Error('Failed to get gesture');
+                }
+                
+                // Start gesture timer
+                startGestureTimer();
+                
+                // Send verification request with gesture name
+                const response = await fetch('http://localhost:5000/capture', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        gesture_name: currentGestureName
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+
+                // Stop gesture timer
+                stopGestureTimer();
+
+                // Wait for 2.5 seconds before removing scanning animation
+                await new Promise(resolve => setTimeout(resolve, 2500));
+
+                // Remove scanning animation
+                cameraContainer.classList.remove('scanning');
+
+                if (data.verified) {
+                    resultDiv.textContent = 'Face and gesture verified successfully!';
+                    resultDiv.className = 'success';
+                } else {
+                    resultDiv.textContent = data.message || 'Verification failed';
+                    resultDiv.className = 'error';
+                }
+            } catch (error) {
+                // Stop gesture timer if it's running
+                stopGestureTimer();
+                
+                // Wait for 2.5 seconds before removing scanning animation even in case of error
+                await new Promise(resolve => setTimeout(resolve, 2500));
+                cameraContainer.classList.remove('scanning');
+                resultDiv.textContent = 'Error: ' + error.message;
+                resultDiv.className = 'error';
+            }
+        }
+    </script>
+</body>
+</html>

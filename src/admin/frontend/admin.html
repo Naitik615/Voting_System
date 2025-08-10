@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Election Management System</title>
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --primary-light: #7986cb;
+      --primary-dark: #303f9f;
+      --secondary-color: #ff4081;
+      --success-color: #4caf50;
+      --error-color: #f44336;
+      --text-dark: #333;
+      --text-light: #f8f9fa;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-dark);
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: var(--primary-color);
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      font-weight: 700;
+      font-size: 2.2rem;
+      text-align: center;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: var(--secondary-color);
+      border-radius: 2px;
+    }
+
+    h2 {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary-light);
+      border-radius: 2px;
+    }
+
+    h3 {
+      color: var(--primary-dark);
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    h4 {
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-family: inherit;
+      font-size: 1rem;
+      background-color: white;
+      transition: var(--transition);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border: 1px dashed #ccc;
+      background-color: #f8f9fa;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: var(--transition);
+      margin-right: 10px;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background-color: #b0b0b0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .location-section {
+      border: 1px solid #e0e0e0;
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: var(--border-radius);
+      background-color: #f9f9fc;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+    }
+
+    .location-section:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .candidate-section {
+      border: 1px solid #e0e0e0;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: var(--border-radius);
+      background-color: white;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .candidate-section:hover {
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .candidate-section::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary-light);
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #success-message {
+      color: var(--success-color);
+      font-weight: 600;
+      margin-top: 25px;
+      padding: 15px;
+      background-color: rgba(76, 175, 80, 0.1);
+      border-left: 4px solid var(--success-color);
+      border-radius: 4px;
+    }
+
+    #error-message {
+      color: var(--error-color);
+      font-weight: 600;
+      margin-top: 25px;
+      padding: 15px;
+      background-color: rgba(244, 67, 54, 0.1);
+      border-left: 4px solid var(--error-color);
+      border-radius: 4px;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      margin-left: 10px;
+      border: 3px solid rgba(63, 81, 181, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      vertical-align: middle;
+    }
+    
+    .step-container {
+      position: relative;
+      padding: 20px 0;
+    }
+    
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+      position: relative;
+    }
+    
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 40px;
+      right: 40px;
+      height: 3px;
+      background: #e0e0e0;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+    
+    .progress-step {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+      z-index: 1;
+      transition: var(--transition);
+    }
+    
+    .progress-step.active {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .progress-step.completed {
+      border-color: var(--success-color);
+      background: var(--success-color);
+      color: white;
+    }
+    
+    .step-label {
+      position: absolute;
+      top: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    .primary-btn {
+      background-color: var(--primary-color);
+    }
+    
+    .secondary-btn {
+      background-color: #757575;
+    }
+    
+    .submit-btn {
+      background-color: var(--success-color);
+    }
+    
+    .submit-btn:hover {
+      background-color: #388e3c;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+      
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      
+      .progress-bar {
+        max-width: 100%;
+      }
+      
+      .step-label {
+        font-size: 0.7rem;
+      }
+      
+      .location-section, .candidate-section {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Election Management System</h1>
+    
+    <div class="progress-bar">
+      <div class="progress-step active" id="step1-indicator">
+        1
+        <span class="step-label">Basic Info</span>
+      </div>
+      <div class="progress-step" id="step2-indicator">
+        2
+        <span class="step-label">Locations</span>
+      </div>
+      <div class="progress-step" id="step3-indicator">
+        3
+        <span class="step-label">Candidates</span>
+      </div>
+    </div>
+    
+    <form id="electionForm" onsubmit="return false;">
+      <div id="step1" class="step-container">
+        <h2>Step 1: Basic Information</h2>
+        <div class="form-group">
+          <label for="numLocations">Number of Locations:</label>
+          <input type="number" id="numLocations" min="1" value="1">
+        </div>
+        <div class="form-group">
+          <label for="electionDuration">Election Duration (in hours):</label>
+          <input type="number" id="electionDuration" min="1" value="24">
+        </div>
+        <div class="button-group">
+          <div></div> <!-- Empty div for flex spacing -->
+          <button type="button" id="nextBtn1" class="primary-btn">Continue to Locations</button>
+        </div>
+      </div>
+      
+      <div id="step2" class="step-container hidden">
+        <h2>Step 2: Location Details</h2>
+        <div id="locationContainer"></div>
+        <div class="button-group">
+          <button type="button" id="prevBtn2" class="secondary-btn">Back</button>
+          <button type="button" id="nextBtn2" class="primary-btn">Continue to Candidates</button>
+        </div>
+      </div>
+      
+      <div id="step3" class="step-container hidden">
+        <h2>Step 3: Candidate Details</h2>
+        <div id="candidateContainer"></div>
+        <div class="button-group">
+          <button type="button" id="prevBtn3" class="secondary-btn">Back</button>
+          <button type="button" id="submitBtn" class="submit-btn">Submit Election Data</button>
+          <span id="loadingIndicator" class="loading hidden"></span>
+        </div>
+      </div>
+    </form>
+    
+    <div id="success-message" class="hidden"></div>
+    <div id="error-message" class="hidden"></div>
+  </div>
+
+  <script>
+    // Prevent form submission
+    window.onbeforeunload = function() {
+      // This prevents accidental page refresh
+      return "Are you sure you want to leave? Your election data may be lost.";
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const step1 = document.getElementById('step1');
+      const step2 = document.getElementById('step2');
+      const step3 = document.getElementById('step3');
+      const step1Indicator = document.getElementById('step1-indicator');
+      const step2Indicator = document.getElementById('step2-indicator');
+      const step3Indicator = document.getElementById('step3-indicator');
+      const nextBtn1 = document.getElementById('nextBtn1');
+      const nextBtn2 = document.getElementById('nextBtn2');
+      const prevBtn2 = document.getElementById('prevBtn2');
+      const prevBtn3 = document.getElementById('prevBtn3');
+      const submitBtn = document.getElementById('submitBtn');
+      const locationContainer = document.getElementById('locationContainer');
+      const candidateContainer = document.getElementById('candidateContainer');
+      const successMessage = document.getElementById('success-message');
+      const errorMessage = document.getElementById('error-message');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+
+      let electionData = {
+        electionDuration: 24,
+        locations: []
+      };
+
+      nextBtn1.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        const numLocations = parseInt(document.getElementById('numLocations').value);
+        const duration = parseInt(document.getElementById('electionDuration').value);
+
+        if (numLocations < 1 || isNaN(numLocations) || duration < 1 || isNaN(duration)) {
+          alert('Please enter valid values for locations and duration.');
+          return;
+        }
+
+        electionData.electionDuration = duration;
+        electionData.locations = Array(numLocations).fill().map(() => ({
+          pinCode: '',
+          locationName: '',
+          numCandidates: 1,
+          candidates: []
+        }));
+
+        locationContainer.innerHTML = '';
+        electionData.locations.forEach((location, index) => {
+          const locationDiv = document.createElement('div');
+          locationDiv.className = 'location-section';
+          locationDiv.innerHTML = `
+            <h3>Location ${index + 1}</h3>
+            <div class="form-group">
+              <label for="pinCode-${index}">Pin Code:</label>
+              <input type="text" id="pinCode-${index}" required placeholder="Enter location pin code">
+            </div>
+            <div class="form-group">
+              <label for="locationName-${index}">Location Name:</label>
+              <input type="text" id="locationName-${index}" required placeholder="Enter location name">
+            </div>
+            <div class="form-group">
+              <label for="numCandidates-${index}">Number of Candidates:</label>
+              <input type="number" id="numCandidates-${index}" min="1" value="1" required>
+            </div>
+          `;
+          locationContainer.appendChild(locationDiv);
+        });
+
+        step1.classList.add('hidden');
+        step2.classList.remove('hidden');
+        step1Indicator.classList.remove('active');
+        step1Indicator.classList.add('completed');
+        step2Indicator.classList.add('active');
+      });
+
+      nextBtn2.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        let allValid = true;
+        electionData.locations.forEach((location, index) => {
+          location.pinCode = document.getElementById(`pinCode-${index}`).value;
+          location.locationName = document.getElementById(`locationName-${index}`).value;
+          location.numCandidates = parseInt(document.getElementById(`numCandidates-${index}`).value);
+
+          if (!location.pinCode || !location.locationName || isNaN(location.numCandidates) || location.numCandidates < 1) {
+            allValid = false;
+          }
+
+          location.candidates = Array(location.numCandidates).fill().map(() => ({
+            name: '',
+            photo: null
+          }));
+        });
+
+        if (!allValid) {
+          alert('Please fill in all location fields with valid values.');
+          return;
+        }
+
+        candidateContainer.innerHTML = '';
+        electionData.locations.forEach((location, locIndex) => {
+          const locationDiv = document.createElement('div');
+          locationDiv.className = 'location-section';
+          locationDiv.innerHTML = `<h3>${location.locationName} Candidates</h3>`;
+
+          location.candidates.forEach((candidate, candIndex) => {
+            const candidateDiv = document.createElement('div');
+            candidateDiv.className = 'candidate-section';
+            candidateDiv.innerHTML = `
+              <h4>Candidate ${candIndex + 1}</h4>
+              <div class="form-group">
+                <label for="candidateName-${locIndex}-${candIndex}">Name:</label>
+                <input type="text" id="candidateName-${locIndex}-${candIndex}" required placeholder="Enter candidate name">
+              </div>
+              <div class="form-group">
+                <label for="candidatePhoto-${locIndex}-${candIndex}">Photo:</label>
+                <input type="file" id="candidatePhoto-${locIndex}-${candIndex}" name="candidatePhotos" accept="image/*" required>
+              </div>
+            `;
+            locationDiv.appendChild(candidateDiv);
+          });
+
+          candidateContainer.appendChild(locationDiv);
+        });
+
+        step2.classList.add('hidden');
+        step3.classList.remove('hidden');
+        step2Indicator.classList.remove('active');
+        step2Indicator.classList.add('completed');
+        step3Indicator.classList.add('active');
+      });
+
+      prevBtn2.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        step2.classList.add('hidden');
+        step1.classList.remove('hidden');
+        step2Indicator.classList.remove('active');
+        step1Indicator.classList.remove('completed');
+        step1Indicator.classList.add('active');
+      });
+
+      prevBtn3.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        step3.classList.add('hidden');
+        step2.classList.remove('hidden');
+        step3Indicator.classList.remove('active');
+        step2Indicator.classList.remove('completed');
+        step2Indicator.classList.add('active');
+      });
+
+      submitBtn.addEventListener('click', async function(e) {
+        e.preventDefault(); // Prevent default form submission
+        if (e.target.type === 'submit') {
+          e.preventDefault(); // Additional prevention
+        }
+        
+        // Hide previous messages
+        successMessage.classList.add('hidden');
+        errorMessage.classList.add('hidden');
+        
+        let allValid = true;
+        electionData.locations.forEach((location, locIndex) => {
+          location.candidates.forEach((candidate, candIndex) => {
+            candidate.name = document.getElementById(`candidateName-${locIndex}-${candIndex}`).value;
+            const photoInput = document.getElementById(`candidatePhoto-${locIndex}-${candIndex}`);
+
+            if (!candidate.name || photoInput.files.length === 0) {
+              allValid = false;
+            }
+          });
+        });
+
+        if (!allValid) {
+          alert('Please fill in all candidate fields.');
+          return;
+        }
+
+        // Disable submit button and show loading indicator
+        submitBtn.disabled = true;
+        loadingIndicator.classList.remove('hidden');
+
+        const formData = new FormData();
+        const data = {
+          electionDuration: electionData.electionDuration,
+          locations: electionData.locations.map(location => ({
+            pinCode: location.pinCode,
+            locationName: location.locationName,
+            candidates: location.candidates.map(candidate => ({
+              name: candidate.name
+            }))
+          }))
+        };
+
+        formData.append('data', JSON.stringify(data));
+        
+        // Add all photos to FormData with the SAME field name to create an array
+        electionData.locations.forEach((location, locIndex) => {
+          location.candidates.forEach((candidate, candIndex) => {
+            const photoInput = document.getElementById(`candidatePhoto-${locIndex}-${candIndex}`);
+            if (photoInput.files[0]) {
+              formData.append('candidatePhotos', photoInput.files[0]);
+            }
+          });
+        });
+
+        try {
+          // Use the multi-photo endpoint that we added in the backend
+          const response = await fetch('http://localhost:4000/elections', {
+            method: 'POST',
+            body: formData,
+            // Prevent page refresh by not following redirects
+            redirect: 'manual'
+          });
+
+          if (!response.ok) {
+            throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+          }
+
+          try {
+            // These additional API calls appear to be required by your application flow
+            const dataResponse = await fetch('http://localhost:3700/get_data');
+            if (!dataResponse.ok) {
+              console.warn('Warning: Failed to get data, but election was created.');
+            }
+
+            const blockchainResponse = await fetch('http://localhost:3300/insert_blockchain');
+            if (!blockchainResponse.ok) {
+              console.warn('Warning: Failed to insert data into blockchain, but election was created.');
+            }
+          } catch (secondaryError) {
+            console.warn('Warning: Secondary operations failed, but election was created:', secondaryError);
+          }
+
+          // Success - show message and hide form
+          successMessage.textContent = 'Election created successfully!';
+          successMessage.classList.remove('hidden');
+          step3.classList.add('hidden');
+          
+          // Remove the beforeunload handler on success
+          window.onbeforeunload = null;
+        } catch (error) {
+          console.error('Error:', error);
+          errorMessage.textContent = `Error: ${error.message}`;
+          errorMessage.classList.remove('hidden');
+        } finally {
+          // Re-enable the submit button and hide loading indicator
+          submitBtn.disabled = false;
+          loadingIndicator.classList.add('hidden');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

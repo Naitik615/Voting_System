@@ -1,0 +1,330 @@
+:root {
+    --evm-blue: #004684;
+    --evm-red: #e63946;
+    --evm-green: #2a9d8f;
+    --evm-gray: #333333;
+    --evm-light-gray: #f0f0f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.evm-machine {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 500px;
+    overflow: hidden;
+    border: 2px solid var(--evm-gray);
+}
+
+.evm-header {
+    background-color: var(--evm-blue);
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    position: relative;
+}
+
+.evm-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.serial-number {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.evm-container {
+    padding: 20px;
+    background-color: var(--evm-light-gray);
+}
+
+.candidate {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border: 2px solid #ddd;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.candidate:hover {
+    border-color: var(--evm-blue);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.candidate.selected {
+    border-color: var(--evm-green);
+    background-color: rgba(42, 157, 143, 0.1);
+}
+
+.party-symbol {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    margin-right: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: var(--evm-gray);
+    border: 2px solid #ccc;
+}
+
+.party-info {
+    flex-grow: 1;
+}
+
+.party-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 3px;
+}
+
+.select-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+}
+
+.candidate.selected .select-indicator {
+    background-color: var(--evm-green);
+    border-color: var(--evm-green);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.evm-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: white;
+    border-top: 1px solid #eee;
+}
+
+.evm-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.evm-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cast-vote-btn {
+    background-color: var(--evm-blue);
+    color: white;
+}
+
+.cast-vote-btn:not(:disabled):hover {
+    background-color: #003366;
+}
+
+.nota-btn {
+    background-color: var(--evm-red);
+    color: white;
+}
+
+.nota-btn:hover {
+    background-color: #c1121f;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-box {
+    background-color: white;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popup-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: var(--evm-blue);
+}
+
+.popup-header i {
+    font-size: 1.8rem;
+}
+
+.popup-header h3 {
+    font-size: 1.3rem;
+}
+
+.selected-candidate-display {
+    background-color: var(--evm-light-gray);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.popup-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.popup-actions .evm-button {
+    flex: 1;
+    padding: 12px;
+}
+
+.secondary {
+    background-color: #f0f0f0;
+    color: var(--evm-gray);
+}
+
+.secondary:hover {
+    background-color: #e0e0e0;
+}
+
+.primary {
+    background-color: var(--evm-green);
+    color: white;
+}
+
+.primary:hover {
+    background-color: #21867a;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .evm-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .candidate {
+        padding: 10px 12px;
+    }
+    
+    .party-symbol {
+        width: 36px;
+        height: 36px;
+        margin-right: 12px;
+    }
+    
+    .evm-button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .popup-box {
+        padding: 20px;
+    }
+}
+
+.threat-alert-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    animation: slideIn 0.3s ease;
+}
+
+.threat-alert-content {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.threat-alert-content i {
+    color: #ffc107;
+    font-size: 24px;
+}
+
+.threat-alert-content h3 {
+    color: #856404;
+    margin: 0;
+    font-size: 18px;
+}
+
+.threat-alert-content p {
+    color: #856404;
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

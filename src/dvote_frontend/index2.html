@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVM Voting Machine</title>
+    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="evm-machine">
+        <div class="evm-header">
+            <h2 id="location">ELECTRONIC VOTING MACHINE</h2>
+            <div class="serial-number">Serial No: EVM-2024-001</div>
+        </div>
+        
+        <div class="evm-container">
+            <!-- Candidates will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="evm-controls">
+            <button class="evm-button nota-btn" id="nota-btn">
+                <i class="fas fa-ban"></i> NOTA
+            </button>
+            <button class="evm-button cast-vote-btn" id="cast-vote-btn" disabled>
+                <i class="fas fa-vote-yea"></i> CAST VOTE
+            </button>
+        </div>
+    </div>
+
+    <div class="popup-overlay">
+        <div class="popup-box">
+            <div class="popup-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Confirm Your Vote</h3>
+            </div>
+            <p id="confirmation-text">Are you sure you want to vote for:</p>
+            <div class="selected-candidate-display">
+                <span id="selected-party-name">[No candidate selected]</span>
+            </div>
+            <div class="popup-actions">
+                <button id="cancel-btn" class="evm-button secondary">
+                    <i class="fas fa-times"></i> CANCEL
+                </button>
+                <button id="confirm-btn" class="evm-button primary">
+                    <i class="fas fa-check"></i> CONFIRM
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script2.js"></script>
+    <script src="voting-timer.js"></script>
+    <script src="voice-monitor.js"></script>
+    <script src="config.js"></script>
+    <script src="face-monitor.js"></script>
+</body>
+
+</html>
