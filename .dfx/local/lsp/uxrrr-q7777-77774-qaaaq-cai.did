@@ -1,0 +1,12 @@
+service : {
+  addCandidate: (text, text) -> (nat);
+  getCandidate: (nat) -> (nat, text, text, nat) query;
+  getCountCandidates: () -> (int) query;
+  getResults: () -> (vec record {
+                           nat;
+                           text;
+                           text;
+                           nat;
+                         }) query;
+  vote: (text, text) -> ();
+}
